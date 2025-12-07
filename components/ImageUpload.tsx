@@ -1,9 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { ImageUploadProps } from '../types';
+import { TRANSLATIONS } from '../translations';
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, selectedImage, onClear }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, selectedImage, onClear, lang }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const t = TRANSLATIONS[lang];
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -54,13 +56,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, selectedImage,
               onClick={onClear}
               className="bg-white/20 backdrop-blur-md text-white border border-white/50 px-6 py-2 rounded-full font-semibold hover:bg-white hover:text-pink-500 transition-all transform hover:scale-105"
              >
-               更換照片 (Change)
+               {t.changePhoto}
              </button>
           </div>
         </div>
         <p className="text-center text-pink-400 mt-4 font-bold tracking-wider text-sm flex items-center justify-center gap-2">
           <span className="bg-pink-100 w-5 h-5 rounded-full flex items-center justify-center text-[10px]">✓</span>
-          STEP 1: 參考照片確認
+          {t.step1Title}
         </p>
       </div>
     );
@@ -88,8 +90,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, selectedImage,
             <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
           </svg>
         </div>
-        <p className="text-gray-700 font-bold text-lg">上傳照片 (Upload)</p>
-        <p className="text-gray-400 text-sm mt-1">點擊或拖曳檔案至此</p>
+        <p className="text-gray-700 font-bold text-lg">{t.step1UploadTitle}</p>
+        <p className="text-gray-400 text-sm mt-1">{t.step1UploadDesc}</p>
         <input
           type="file"
           accept="image/*"
@@ -98,7 +100,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, selectedImage,
           onChange={handleFileChange}
         />
       </div>
-      <p className="text-center text-gray-500 mt-3 text-sm font-medium">STEP 1: 上傳一張清晰的人物或寵物照</p>
+      <p className="text-center text-gray-500 mt-3 text-sm font-medium">{t.step1Hint}</p>
     </div>
   );
 };

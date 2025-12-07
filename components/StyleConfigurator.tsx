@@ -1,6 +1,6 @@
-
 import React from 'react';
 import { StyleConfiguratorProps, StyleOption, FontOption } from '../types';
+import { TRANSLATIONS } from '../translations';
 
 export const STYLES: StyleOption[] = [
   {
@@ -73,8 +73,11 @@ const StyleConfigurator: React.FC<StyleConfiguratorProps> = ({
   onToggleText,
   isAnthropomorphic,
   onToggleAnthropomorphic,
-  disabled
+  disabled,
+  lang
 }) => {
+  const t = TRANSLATIONS[lang];
+
   return (
     <div className="w-full max-w-2xl mx-auto mb-8 animate-fade-in-up delay-100">
       
@@ -82,7 +85,7 @@ const StyleConfigurator: React.FC<StyleConfiguratorProps> = ({
       <div className="mb-8">
         <label className="block text-gray-800 font-bold mb-4 flex items-center gap-2">
            <span className="bg-pink-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
-           選擇畫風 (Art Style)
+           {t.step2Title}
         </label>
         
         {/* Changed to 2 columns for text-focused cards */}
@@ -102,7 +105,7 @@ const StyleConfigurator: React.FC<StyleConfiguratorProps> = ({
             >
               <div className="flex justify-between items-start w-full mb-1">
                 <span className={`font-black text-lg transition-colors ${selectedStyleId === style.id ? 'text-pink-600' : 'text-gray-800'}`}>
-                  {style.name}
+                  {t[`style_${style.id}_name`] || style.name}
                 </span>
                 
                 {/* Selection Checkmark */}
@@ -121,7 +124,7 @@ const StyleConfigurator: React.FC<StyleConfiguratorProps> = ({
               </div>
               
               <span className={`text-sm font-medium leading-relaxed transition-colors ${selectedStyleId === style.id ? 'text-pink-900/70' : 'text-gray-500'}`}>
-                {style.description}
+                {t[`style_${style.id}_desc`] || style.description}
               </span>
             </button>
           ))}
@@ -132,7 +135,7 @@ const StyleConfigurator: React.FC<StyleConfiguratorProps> = ({
       <div className="mb-8">
         <label className="block text-gray-800 font-bold mb-4 flex items-center gap-2">
            <span className="bg-pink-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">3</span>
-           角色設定 (Character Behavior)
+           {t.step3Title}
         </label>
         
         <div 
@@ -147,12 +150,10 @@ const StyleConfigurator: React.FC<StyleConfiguratorProps> = ({
         >
           <div className="flex-1">
             <h3 className={`font-bold ${isAnthropomorphic ? 'text-purple-700' : 'text-gray-700'}`}>
-              ✨ 擬人化 (Anthropomorphic)
+              {t.anthroTitle}
             </h3>
             <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-              {isAnthropomorphic 
-                ? '啟用中：如果是寵物，會像人一樣站立、使用雙手、坐在椅子上 (例如：在桌上吃飯)。' 
-                : '未啟用：如果是寵物，會保持四腳著地、展現原始動物行為 (例如：趴著、在地上吃飼料)。'}
+              {isAnthropomorphic ? t.anthroOn : t.anthroOff}
             </p>
           </div>
 
@@ -173,19 +174,19 @@ const StyleConfigurator: React.FC<StyleConfiguratorProps> = ({
         <div className="flex items-center justify-between mb-4">
            <label className="text-gray-800 font-bold flex items-center gap-2">
             <span className="bg-pink-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">4</span>
-            文字設定 (Text)
+            {t.step4Title}
           </label>
           
           {/* Text Toggle Switch */}
           <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-full shadow-sm border border-pink-100 cursor-pointer hover:shadow-md transition-shadow" onClick={() => !disabled && onToggleText(!includeText)}>
              <span className={`text-xs font-bold ${!includeText ? 'text-gray-800' : 'text-gray-400'}`}>
-               不加字
+               {t.textOff}
              </span>
              <div className={`w-10 h-6 rounded-full p-1 transition-colors duration-300 ease-in-out ${includeText ? 'bg-pink-500' : 'bg-gray-300'}`}>
                <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${includeText ? 'translate-x-4' : 'translate-x-0'}`}></div>
              </div>
              <span className={`text-xs font-bold ${includeText ? 'text-pink-600' : 'text-gray-400'}`}>
-               加文字
+               {t.textOn}
              </span>
            </div>
         </div>
@@ -209,7 +210,7 @@ const StyleConfigurator: React.FC<StyleConfiguratorProps> = ({
                   <span className={`text-xl text-gray-800 ${font.previewClass}`}>Aa</span>
                 </div>
                 <span className={`font-bold text-sm ${selectedFontId === font.id ? 'text-blue-600' : 'text-gray-700'}`}>
-                  {font.name}
+                  {t[`font_${font.id}_name`] || font.name}
                 </span>
                  {selectedFontId === font.id && (
                   <div className="absolute top-2 right-2 w-4 h-4 bg-blue-400 rounded-full flex items-center justify-center text-white text-[10px] animate-pop-in">

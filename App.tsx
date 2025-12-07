@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from 'react';
 import Header from './components/Header';
 import ImageUpload from './components/ImageUpload';
@@ -6,7 +5,8 @@ import KeywordManager from './components/KeywordManager';
 import StickerGallery from './components/StickerGallery';
 import StyleConfigurator, { STYLES, FONTS } from './components/StyleConfigurator';
 import { generateStickerFromImage } from './services/geminiService';
-import { Sticker, StickerStatus } from './types';
+import { Sticker, StickerStatus, Language } from './types';
+import { TRANSLATIONS } from './translations';
 import { v4 as uuidv4 } from 'uuid';
 
 const App: React.FC = () => {
@@ -14,6 +14,9 @@ const App: React.FC = () => {
   const [keywords, setKeywords] = useState<string[]>([]);
   const [stickers, setStickers] = useState<Sticker[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  // Multi-language State
+  const [lang, setLang] = useState<Language>('zh-TW');
   
   // Style, Font, and Behavior State
   const [selectedStyleId, setSelectedStyleId] = useState(STYLES[0].id);
@@ -24,6 +27,9 @@ const App: React.FC = () => {
   // API Key Management State
   const [hasApiKey, setHasApiKey] = useState(false);
   const [checkingKey, setCheckingKey] = useState(true);
+
+  // Translation helper
+  const t = TRANSLATIONS[lang];
 
   useEffect(() => {
     const checkKey = async () => {
@@ -167,20 +173,20 @@ const App: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">需要 API 金鑰</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">{t.apiKeyTitle}</h2>
           <p className="text-gray-600 mb-6 text-sm leading-relaxed">
-            為了使用最強大的 <strong>Nano Banana Pro</strong> 模型來生成高品質貼圖，請先選擇您付費 GCP 專案的 API Key。<br/>
-            <span className="text-xs text-pink-400 block mt-2">(不用擔心，這是為了確保能使用最高階的 Gemini 3 Pro 影像生成功能)</span>
+            {t.apiKeyDesc}<br/>
+            <span className="text-xs text-pink-400 block mt-2">(Gemini 3 Pro)</span>
           </p>
           {/* Error Message Hint */}
           <div className="bg-red-50 text-red-500 text-xs p-3 rounded-lg mb-4 text-left">
-            <strong>注意：</strong> 如果您剛剛遇到錯誤，可能是因為您的 API Key 所在的專案沒有啟用 Generative Language API，或者沒有設定 Billing。請嘗試切換專案或檢查 GCP 設定。
+            <strong>Note:</strong> Check your GCP Billing and API status if errors occur.
           </div>
           <button
             onClick={handleSelectKey}
             className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all transform hover:-translate-y-1 mb-4"
           >
-            選擇 API Key
+            {t.apiKeySelect}
           </button>
            <a 
             href="https://ai.google.dev/gemini-api/docs/billing" 
@@ -188,7 +194,7 @@ const App: React.FC = () => {
             rel="noopener noreferrer"
             className="text-xs text-blue-400 hover:text-blue-600 hover:underline flex items-center justify-center gap-1"
           >
-            關於計費說明 (Billing Docs)
+            Billing Docs
           </a>
         </div>
       </div>
@@ -197,7 +203,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen pb-12 bg-[#fff5f7]">
-      <Header />
+      <Header lang={lang} setLang={setLang} />
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
@@ -206,14 +212,13 @@ const App: React.FC = () => {
                Gemini Nano Banana Pro inside
             </div>
             <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4 leading-tight">
-              將您的照片變成<br/>
+              {t.heroPrefix}<br/>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-500">
-                可愛 Q 版貼圖 (スタンプ)
+                {t.heroHighlight}
               </span>
             </h2>
             <p className="text-gray-500 text-base md:text-lg">
-              上傳人物或寵物照片，加入情緒關鍵字，<br className="hidden md:block"/>
-              讓 AI 設計師 <b>Maya</b> 為您繪製專屬貼圖包！
+              {t.heroDesc}
             </p>
           </div>
 
@@ -221,6 +226,7 @@ const App: React.FC = () => {
             selectedImage={selectedImage} 
             onImageSelect={handleImageSelect}
             onClear={handleClearImage}
+            lang={lang}
           />
 
           {selectedImage && (
@@ -236,6 +242,7 @@ const App: React.FC = () => {
                 isAnthropomorphic={isAnthropomorphic}
                 onToggleAnthropomorphic={setIsAnthropomorphic}
                 disabled={isGenerating}
+                lang={lang}
               />
 
               <KeywordManager 
@@ -243,6 +250,7 @@ const App: React.FC = () => {
                 onAddKeyword={handleAddKeyword}
                 onRemoveKeyword={handleRemoveKeyword}
                 disabled={isGenerating}
+                lang={lang}
               />
 
               <div className="flex flex-col items-center justify-center mt-10 gap-6">
@@ -265,24 +273,24 @@ const App: React.FC = () => {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                       Maya 繪製中...
+                       {t.generateBtnActive}
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
                       <span>✨</span>
-                      {keywords.length > 0 ? `製作 ${keywords.length} 張貼圖` : '請先新增關鍵字'}
+                      {keywords.length > 0 ? `${t.generateBtnIdle} ${keywords.length} stickers` : t.generateBtnIdle}
                     </span>
                   )}
                 </button>
               </div>
               <p className="text-center text-xs text-gray-400 mt-4">
-                * 使用 Nano Banana Pro 模型生成，每張貼圖約需 5-10 秒
+                {t.generateHint}
               </p>
             </div>
           )}
         </div>
 
-        <StickerGallery stickers={stickers} />
+        <StickerGallery stickers={stickers} lang={lang} />
       </main>
 
       {/* Tailwind Custom Animations Config Inject */}

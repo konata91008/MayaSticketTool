@@ -1,14 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { KeywordManagerProps } from '../types';
+import { TRANSLATIONS } from '../translations';
 
 const KeywordManager: React.FC<KeywordManagerProps> = ({ 
   keywords, 
   onAddKeyword, 
   onRemoveKeyword,
-  disabled
+  disabled,
+  lang
 }) => {
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const t = TRANSLATIONS[lang];
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -34,7 +37,7 @@ const KeywordManager: React.FC<KeywordManagerProps> = ({
       <div className="mb-5">
         <label className="block text-gray-800 font-bold mb-3 flex items-center gap-2">
            <span className="bg-pink-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">4</span>
-           設定貼圖關鍵字 (Keywords)
+           {t.step5Title}
         </label>
         <div className="flex gap-2 relative">
           <input
@@ -44,7 +47,7 @@ const KeywordManager: React.FC<KeywordManagerProps> = ({
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={disabled}
-            placeholder="例如：早安、生氣、愛你、OK..."
+            placeholder={t.keywordPlaceholder}
             className="flex-1 px-5 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition-all shadow-inner"
           />
           <button
@@ -52,18 +55,18 @@ const KeywordManager: React.FC<KeywordManagerProps> = ({
             disabled={!inputValue.trim() || disabled}
             className="bg-pink-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md active:translate-y-0.5"
           >
-            加入
+            {t.keywordAdd}
           </button>
         </div>
         <p className="text-xs text-gray-400 mt-2 ml-1">
-          💡 小撇步：輸入動作或情緒，例如「比讚」、「哭哭」。加入後會自動清空方便繼續輸入。
+          {t.keywordHint}
         </p>
       </div>
 
       <div className="flex flex-wrap gap-2 min-h-[48px]">
         {keywords.length === 0 && (
           <div className="w-full text-center py-6 text-gray-400 italic bg-white/50 rounded-xl border-2 border-dashed border-pink-100">
-            還沒有關鍵字... 試試看輸入「你好」或「OK」
+            {t.keywordEmpty}
           </div>
         )}
         {keywords.map((kw, index) => (

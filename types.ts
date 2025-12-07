@@ -6,6 +6,8 @@ export enum StickerStatus {
   ERROR = 'ERROR',
 }
 
+export type Language = 'zh-TW' | 'en' | 'ja' | 'ko';
+
 export interface Sticker {
   id: string;
   keyword: string;
@@ -18,6 +20,7 @@ export interface ImageUploadProps {
   onImageSelect: (base64: string) => void;
   selectedImage: string | null;
   onClear: () => void;
+  lang: Language;
 }
 
 export interface KeywordManagerProps {
@@ -25,10 +28,12 @@ export interface KeywordManagerProps {
   onAddKeyword: (keyword: string) => void;
   onRemoveKeyword: (index: number) => void;
   disabled: boolean;
+  lang: Language;
 }
 
 export interface StickerGalleryProps {
   stickers: Sticker[];
+  lang: Language;
 }
 
 export interface StyleOption {
@@ -57,4 +62,5 @@ export interface StyleConfiguratorProps {
   isAnthropomorphic: boolean;
   onToggleAnthropomorphic: (val: boolean) => void;
   disabled: boolean;
+  lang: Language;
 }

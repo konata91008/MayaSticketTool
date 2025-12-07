@@ -1,7 +1,10 @@
 import React from 'react';
-import { Sticker, StickerStatus } from '../types';
+import { Sticker, StickerStatus, Language, StickerGalleryProps } from '../types';
+import { TRANSLATIONS } from '../translations';
 
-const StickerCard: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
+const StickerCard: React.FC<{ sticker: Sticker; lang: Language }> = ({ sticker, lang }) => {
+  const t = TRANSLATIONS[lang];
+
   const downloadImage = () => {
     if (sticker.imageUrl) {
       const link = document.createElement('a');
@@ -19,7 +22,7 @@ const StickerCard: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
         {sticker.status === StickerStatus.LOADING && (
           <div className="flex flex-col items-center z-10">
              <div className="w-12 h-12 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin mb-3"></div>
-             <p className="text-xs text-pink-500 font-bold animate-pulse tracking-wide">Maya 繪製中...</p>
+             <p className="text-xs text-pink-500 font-bold animate-pulse tracking-wide">{t.generateBtnActive}</p>
           </div>
         )}
         
@@ -30,7 +33,7 @@ const StickerCard: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
               </svg>
             </div>
-            <p className="text-xs text-red-400 font-medium">生成失敗</p>
+            <p className="text-xs text-red-400 font-medium">{t.errorGen}</p>
           </div>
         )}
 
@@ -54,7 +57,7 @@ const StickerCard: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
-            下載 (Download)
+            {t.download}
           </button>
         )}
       </div>
@@ -62,23 +65,25 @@ const StickerCard: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
   );
 };
 
-const StickerGallery: React.FC<{ stickers: Sticker[] }> = ({ stickers }) => {
+const StickerGallery: React.FC<StickerGalleryProps> = ({ stickers, lang }) => {
+  const t = TRANSLATIONS[lang];
+
   if (stickers.length === 0) return null;
 
   return (
     <div className="w-full max-w-5xl mx-auto mt-12 mb-20 px-4">
       <div className="flex items-center justify-between mb-8 border-b border-gray-100 pb-4">
         <h2 className="text-2xl font-black text-gray-800 tracking-tight flex items-center gap-2">
-           📦 您的貼圖包 (Sticker Pack)
+           {t.galleryTitle}
         </h2>
         <span className="text-xs font-bold bg-gray-900 text-white px-3 py-1.5 rounded-full">
-          {stickers.filter(s => s.status === StickerStatus.SUCCESS).length} / {stickers.length} 完成
+          {stickers.filter(s => s.status === StickerStatus.SUCCESS).length} / {stickers.length} {t.galleryCount}
         </span>
       </div>
       
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {stickers.map((sticker) => (
-          <StickerCard key={sticker.id} sticker={sticker} />
+          <StickerCard key={sticker.id} sticker={sticker} lang={lang} />
         ))}
       </div>
     </div>
