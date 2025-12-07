@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../translations';
 
@@ -9,6 +9,12 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ lang, setLang }) => {
   const t = TRANSLATIONS[lang];
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleLanguageSelect = (selectedLang: Language) => {
+    setLang(selectedLang);
+    setIsMenuOpen(false);
+  };
 
   return (
     <header className="bg-white/80 backdrop-blur-md shadow-sm py-4 px-6 sticky top-0 z-50 border-b border-pink-100">
@@ -38,8 +44,11 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang }) => {
             </div>
           </div>
 
-          <div className="relative group">
-            <button className="flex items-center gap-1.5 text-gray-600 hover:text-pink-500 transition-colors font-bold text-sm bg-white border border-gray-200 px-3 py-1.5 rounded-lg shadow-sm">
+          <div className="relative">
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="flex items-center gap-1.5 text-gray-600 hover:text-pink-500 transition-colors font-bold text-sm bg-white border border-gray-200 px-3 py-1.5 rounded-lg shadow-sm"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S12 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S12 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m-15.686 0A11.953 11.953 0 0112 10.5c2.998 0 5.74-1.1 7.843-2.918m-15.686 0A8.959 8.959 0 013 12c0 .778.099 1.533.284 2.253" />
               </svg>
@@ -50,12 +59,24 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang }) => {
                 {lang === 'ko' && '한국어'}
               </span>
             </button>
-            <div className="absolute right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden hidden group-hover:block animate-fade-in z-50">
-              <button onClick={() => setLang('zh-TW')} className={`block w-full text-left px-4 py-2 text-sm hover:bg-pink-50 ${lang === 'zh-TW' ? 'text-pink-500 font-bold' : 'text-gray-700'}`}>繁體中文</button>
-              <button onClick={() => setLang('en')} className={`block w-full text-left px-4 py-2 text-sm hover:bg-pink-50 ${lang === 'en' ? 'text-pink-500 font-bold' : 'text-gray-700'}`}>English</button>
-              <button onClick={() => setLang('ja')} className={`block w-full text-left px-4 py-2 text-sm hover:bg-pink-50 ${lang === 'ja' ? 'text-pink-500 font-bold' : 'text-gray-700'}`}>日本語</button>
-              <button onClick={() => setLang('ko')} className={`block w-full text-left px-4 py-2 text-sm hover:bg-pink-50 ${lang === 'ko' ? 'text-pink-500 font-bold' : 'text-gray-700'}`}>한국어</button>
-            </div>
+
+            {/* Invisible backdrop to handle click-outside */}
+            {isMenuOpen && (
+              <div 
+                className="fixed inset-0 z-40" 
+                onClick={() => setIsMenuOpen(false)}
+              ></div>
+            )}
+
+            {/* Dropdown Menu */}
+            {isMenuOpen && (
+              <div className="absolute right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in z-50">
+                <button onClick={() => handleLanguageSelect('zh-TW')} className={`block w-full text-left px-4 py-2 text-sm hover:bg-pink-50 ${lang === 'zh-TW' ? 'text-pink-500 font-bold' : 'text-gray-700'}`}>繁體中文</button>
+                <button onClick={() => handleLanguageSelect('en')} className={`block w-full text-left px-4 py-2 text-sm hover:bg-pink-50 ${lang === 'en' ? 'text-pink-500 font-bold' : 'text-gray-700'}`}>English</button>
+                <button onClick={() => handleLanguageSelect('ja')} className={`block w-full text-left px-4 py-2 text-sm hover:bg-pink-50 ${lang === 'ja' ? 'text-pink-500 font-bold' : 'text-gray-700'}`}>日本語</button>
+                <button onClick={() => handleLanguageSelect('ko')} className={`block w-full text-left px-4 py-2 text-sm hover:bg-pink-50 ${lang === 'ko' ? 'text-pink-500 font-bold' : 'text-gray-700'}`}>한국어</button>
+              </div>
+            )}
           </div>
         </div>
       </div>
