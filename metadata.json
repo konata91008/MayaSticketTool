@@ -1,0 +1,8 @@
+{
+  "name": "Maya の 貼圖製造所",
+  "description": "Maya の 貼圖製造所 - 使用 Gemini Nano Banana Pro 將您的照片變成可愛 Q 版 Line 貼圖。",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
